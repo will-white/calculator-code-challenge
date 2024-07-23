@@ -95,4 +95,14 @@ public class CalculatorTests
 
         Assert.Equal(expected, result);
     }
+
+    [Theory]
+    [InlineData("//[*][!!][r9r]\n11r9r22*hh*33!!44", 110)]
+    [InlineData("//[*][!!][r9r]\n11r9r22,hh\n33!!44", 110)]
+    public void AllowForMultipleCustomDelimiters(string numbers, int expected)
+    {
+        var result = Calculator.Calculate(numbers);
+
+        Assert.Equal(expected, result);
+    }
 }

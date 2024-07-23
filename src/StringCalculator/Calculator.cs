@@ -37,7 +37,10 @@ public static partial class Calculator
 
             if (delimiter.StartsWith('['))
             {
-                delimiters.Add(DelimiterRegex().Match(delimiter).Value);
+                delimiters.AddRange(
+                    DelimiterRegex()
+                        .Matches(delimiter)
+                        .Select(m => m.Groups[0].Value));
             }
             else if (delimiter.Length > 1)
             {

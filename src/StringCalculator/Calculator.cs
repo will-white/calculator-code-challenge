@@ -14,6 +14,7 @@ public static class Calculator
             var parsedValue = int.TryParse(item, out int v) ? v : 0;
 
             if (parsedValue < 0) negativeValues.Add(parsedValue);
+            else if (parsedValue > 1000) parsedValue = 0;
 
             value += parsedValue;
         }

@@ -6,7 +6,7 @@ public class CalculatorTests
 {
     [Theory]
     [InlineData("20", 20)]
-    [InlineData("1,5000", 5001)]
+    [InlineData("1,999", 1000)]
     public void ShouldAddAllNumbers(string numbers, int expected)
     {
         var result = Calculator.Calculate(numbers);
@@ -56,5 +56,16 @@ public class CalculatorTests
         var exception = Assert.Throws<Exception>(() => Calculator.Calculate(numbers));
 
         Assert.Contains(expectedValues, exception.Message);
+    }
+
+    [Theory]
+    [InlineData("2,1001,6", 8)]
+    [InlineData("33,1000,78", 1111)]
+    [InlineData("2,999,6", 1007)]
+    public void ShouldZeroOutNumbersAboveUpperBound(string numbers, int expected)
+    {
+        var result = Calculator.Calculate(numbers);
+
+        Assert.Equal(expected, result);
     }
 }

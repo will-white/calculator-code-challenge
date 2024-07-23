@@ -6,7 +6,7 @@ public class ConsoleTests
 {
     [Theory]
     [InlineData("20", "20")]
-    [InlineData("1,5000", "5001")]
+    [InlineData("66,33", "99")]
     public void ShouldAcceptStringInput(string numbers, string expected)
     {
         var writer = new StringWriter();

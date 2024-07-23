@@ -4,12 +4,13 @@ namespace StringCalculator;
 
 public static partial class Calculator
 {
-    public static int Calculate(string str)
+    public static string Calculate(string str)
     {
         string[] arr = ParseAndSplitString(str);
 
         int value = 0;
         List<int> negativeValues = [];
+        List<int> parsedValues = [];
         foreach (var item in arr)
         {
             var parsedValue = int.TryParse(item, out int v) ? v : 0;
@@ -17,13 +18,14 @@ public static partial class Calculator
             if (parsedValue < 0) negativeValues.Add(parsedValue);
             else if (parsedValue > 1000) parsedValue = 0;
 
+            parsedValues.Add(parsedValue);
             value += parsedValue;
         }
 
         if (negativeValues.Count > 0)
             throw new Exception($"Negative values are NOT allowed. ({string.Join(", ", negativeValues)})");
 
-        return value;
+        return $"{string.Join("+", parsedValues)} = {value}";
     }
 
     private static string[] ParseAndSplitString(string str)

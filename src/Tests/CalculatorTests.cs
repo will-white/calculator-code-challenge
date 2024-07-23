@@ -68,4 +68,20 @@ public class CalculatorTests
 
         Assert.Equal(expected, result);
     }
+
+    [Theory]
+    [InlineData("//#\n2#5", 7)]
+    [InlineData("//,\n2,ff,100", 102)]
+    public void AllowForCustomSingleCharDelimiter(string numbers, int expected)
+    {
+        var result = Calculator.Calculate(numbers);
+
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void ShouldThrowWhenMoreThanTwoCharactersForSingleDelimiter()
+    {
+        Assert.Throws<Exception>(() => Calculator.Calculate("//||\n2||5"));
+    }
 }

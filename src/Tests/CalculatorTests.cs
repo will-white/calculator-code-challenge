@@ -38,4 +38,14 @@ public class CalculatorTests
 
         Assert.Equal(expected, result);
     }
+
+    [Theory]
+    [InlineData("1\n2,3", 6)]
+    [InlineData("2,4\n8\n16,32", 62)]
+    public void AllowNewLineDelimiter(string numbers, int expected)
+    {
+        var result = Calculator.Calculate(numbers);
+
+        Assert.Equal(expected, result);
+    }
 }

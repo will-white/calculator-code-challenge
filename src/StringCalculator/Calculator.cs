@@ -4,9 +4,13 @@ namespace StringCalculator;
 
 public static partial class Calculator
 {
-    public static string Calculate(string str)
+    public static string Calculate(
+        string str,
+        string altDelimiter = "\n",
+        bool allowNegativeNumbers = false,
+        int upperBound = 1000)
     {
-        string[] arr = ParseAndSplitString(str);
+        string[] arr = ParseAndSplitString(str, altDelimiter);
 
         int value = 0;
         List<int> negativeValues = [];
@@ -15,8 +19,8 @@ public static partial class Calculator
         {
             var parsedValue = int.TryParse(item, out int v) ? v : 0;
 
-            if (parsedValue < 0) negativeValues.Add(parsedValue);
-            else if (parsedValue > 1000) parsedValue = 0;
+            if (!allowNegativeNumbers && parsedValue < 0) negativeValues.Add(parsedValue);
+            else if (parsedValue > upperBound) parsedValue = 0;
 
             parsedValues.Add(parsedValue);
             value += parsedValue;
@@ -28,9 +32,9 @@ public static partial class Calculator
         return $"{string.Join("+", parsedValues)} = {value}";
     }
 
-    private static string[] ParseAndSplitString(string str)
+    private static string[] ParseAndSplitString(string str, string altDelimiter)
     {
-        var delimiters = new List<string> { ",", "\n" };
+        var delimiters = new List<string> { ",", altDelimiter };
 
         if (str.StartsWith("//"))
         {

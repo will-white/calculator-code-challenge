@@ -49,6 +49,17 @@ public class CalculatorTests
         Assert.Equal(expected, result);
     }
 
+
+    [Theory]
+    [InlineData("1|2,3", "1+2+3 = 6")]
+    [InlineData("2,4|8|16,32", "2+4+8+16+32 = 62")]
+    public void AllowCustomDefaultDelimiter(string numbers, string expected)
+    {
+        var result = Calculator.Calculate(numbers, altDelimiter: "|");
+
+        Assert.Equal(expected, result);
+    }
+
     [Theory]
     [InlineData("4, -3", "-3")]
     [InlineData("-1,5,-8", "-1, -8")]
@@ -60,12 +71,34 @@ public class CalculatorTests
     }
 
     [Theory]
+    [InlineData("4, -3", "4+-3 = 1")]
+    [InlineData("-1,5,-8", "-1+5+-8 = -4")]
+    public void AllowNegativeNumbersOnToggle(string numbers, string expected)
+    {
+        var result = Calculator.Calculate(numbers, allowNegativeNumbers: true);
+
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
     [InlineData("2,1001,6", "2+0+6 = 8")]
     [InlineData("33,1000,78", "33+1000+78 = 1111")]
     [InlineData("2,999,6", "2+999+6 = 1007")]
     public void ShouldZeroOutNumbersAboveUpperBound(string numbers, string expected)
     {
         var result = Calculator.Calculate(numbers);
+
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("2,1001,6", "2+1001+6 = 1009")]
+    [InlineData("33,1000,78", "33+1000+78 = 1111")]
+    [InlineData("2,5000,6", "2+5000+6 = 5008")]
+    [InlineData("2,5001,6", "2+0+6 = 8")]
+    public void ShouldAllowUpperBoundToBechanged(string numbers, string expected)
+    {
+        var result = Calculator.Calculate(numbers, upperBound: 5000);
 
         Assert.Equal(expected, result);
     }

@@ -14,7 +14,7 @@ public class ConsoleTests
         var reader = new StringReader(numbers + "\r\n");
         Console.SetIn(reader);
 
-        Program.Main([]);
+        Program.Main(["--testing"]);
 
         var output = writer.ToString().Split("\n")[1];
 

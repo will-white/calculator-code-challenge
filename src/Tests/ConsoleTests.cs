@@ -19,6 +19,6 @@ public class ConsoleTests
 
         var output = writer.ToString().Split("\n")[1];
 
-        Assert.Equal(output, expected);
+        Assert.Equal(expected, output);
     }
 }

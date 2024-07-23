@@ -8,10 +8,18 @@ public static class Calculator
         string[] arr = str.Split([',', '\n']);
 
         int value = 0;
+        List<int> negativeValues = [];
         foreach (var item in arr)
         {
-            value += int.TryParse(item, out int v) ? v : 0;
+            var parsedValue = int.TryParse(item, out int v) ? v : 0;
+
+            if (parsedValue < 0) negativeValues.Add(parsedValue);
+
+            value += parsedValue;
         }
+
+        if (negativeValues.Count > 0)
+            throw new Exception($"Negative values are NOT allowed. ({string.Join(", ", negativeValues)})");
 
         return value;
     }

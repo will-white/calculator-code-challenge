@@ -7,7 +7,6 @@ public class CalculatorTests
     [Theory]
     [InlineData("20", 20)]
     [InlineData("1,5000", 5001)]
-    [InlineData("4, -3", 1)]
     public void ShouldAddAllNumbers(string numbers, int expected)
     {
         var result = Calculator.Calculate(numbers);
@@ -47,5 +46,15 @@ public class CalculatorTests
         var result = Calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("4, -3", "-3")]
+    [InlineData("-1,5,-8", "-1, -8")]
+    public void NegativeValuesShouldThrowAndDisplayNegativeValues(string numbers, string expectedValues)
+    {
+        var exception = Assert.Throws<Exception>(() => Calculator.Calculate(numbers));
+
+        Assert.Contains(expectedValues, exception.Message);
     }
 }

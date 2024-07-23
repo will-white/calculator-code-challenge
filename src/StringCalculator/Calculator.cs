@@ -1,7 +1,8 @@
+using System.Text.RegularExpressions;
 
 namespace StringCalculator;
 
-public static class Calculator
+public static partial class Calculator
 {
     public static int Calculate(string str)
     {
@@ -27,20 +28,32 @@ public static class Calculator
 
     private static string[] ParseAndSplitString(string str)
     {
-        var delimiters = new List<char> { ',', '\n' };
+        var delimiters = new List<string> { ",", "\n" };
 
         if (str.StartsWith("//"))
         {
             string[] strings = str.Split('\n', 2);
             string delimiter = strings[0][2..];
 
-            if (delimiter.Length > 1) throw new Exception("Only a single character is allowed");
-
-            delimiters.Add(delimiter[0]);
+            if (delimiter.StartsWith('['))
+            {
+                delimiters.Add(DelimiterRegex().Match(delimiter).Value);
+            }
+            else if (delimiter.Length > 1)
+            {
+                throw new Exception("Single delimiter only allows for a single character");
+            }
+            else
+            {
+                delimiters.Add(delimiter);
+            }
 
             return strings[1].Split(delimiters.ToArray(), StringSplitOptions.None);
         }
 
         return str.Split(delimiters.ToArray(), StringSplitOptions.None);
     }
+
+    [GeneratedRegex(@"[^\[^\]]+", RegexOptions.Singleline)]
+    private static partial Regex DelimiterRegex();
 }

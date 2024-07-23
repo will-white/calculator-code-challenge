@@ -84,4 +84,15 @@ public class CalculatorTests
     {
         Assert.Throws<Exception>(() => Calculator.Calculate("//||\n2||5"));
     }
+
+    [Theory]
+    [InlineData("//[***]\n11***22***33", 66)]
+    [InlineData("//[||]\n11||22||33", 66)]
+    [InlineData("//[||]\n11||22,33", 66)]
+    public void AllowForCustomAnyLengthCharDelimiter(string numbers, int expected)
+    {
+        var result = Calculator.Calculate(numbers);
+
+        Assert.Equal(expected, result);
+    }
 }

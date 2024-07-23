@@ -2,15 +2,13 @@ using System.Text.RegularExpressions;
 
 namespace StringCalculator;
 
-public static partial class Calculator
+public partial class Calculator(ICalculatorOptions options)
 {
-    public static string Calculate(
-        string str,
-        string altDelimiter = "\n",
-        bool allowNegativeNumbers = false,
-        int upperBound = 1000)
+    private readonly ICalculatorOptions _options = options ?? new CalculatorOptions();
+
+    public string Calculate(string str)
     {
-        string[] arr = ParseAndSplitString(str, altDelimiter);
+        string[] arr = ParseAndSplitString(str, _options.AltDelimiter);
 
         int value = 0;
         List<int> negativeValues = [];
@@ -19,8 +17,8 @@ public static partial class Calculator
         {
             var parsedValue = int.TryParse(item, out int v) ? v : 0;
 
-            if (!allowNegativeNumbers && parsedValue < 0) negativeValues.Add(parsedValue);
-            else if (parsedValue > upperBound) parsedValue = 0;
+            if (!_options.AllowNegative && parsedValue < 0) negativeValues.Add(parsedValue);
+            else if (parsedValue > _options.UpperBound) parsedValue = 0;
 
             parsedValues.Add(parsedValue);
             value += parsedValue;

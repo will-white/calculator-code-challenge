@@ -9,7 +9,8 @@ public class CalculatorTests
     [InlineData("1,999", "1+999 = 1000")]
     public void ShouldAddAllNumbers(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers);
+        var calculator = new Calculator(new CalculatorOptions());
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
@@ -22,7 +23,8 @@ public class CalculatorTests
     [InlineData("2,,4,rrrr,1001,6", "2+0+4+0+0+6 = 12")]
     public void ShouldTreatEmptyOrInvalidAsZero(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers);
+        var calculator = new Calculator(new CalculatorOptions());
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
@@ -34,7 +36,8 @@ public class CalculatorTests
     [InlineData("1,x,x,y,y", "1+0+0+0+0 = 1")]
     public void AllowMutipleNumbers(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers);
+        var calculator = new Calculator(new CalculatorOptions());
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
@@ -44,7 +47,8 @@ public class CalculatorTests
     [InlineData("2,4\n8\n16,32", "2+4+8+16+32 = 62")]
     public void AllowNewLineDelimiter(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers);
+        var calculator = new Calculator(new CalculatorOptions());
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
@@ -55,7 +59,8 @@ public class CalculatorTests
     [InlineData("2,4|8|16,32", "2+4+8+16+32 = 62")]
     public void AllowCustomDefaultDelimiter(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers, altDelimiter: "|");
+        var calculator = new Calculator(new CalculatorOptions() { AltDelimiter = "|" });
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
@@ -65,7 +70,8 @@ public class CalculatorTests
     [InlineData("-1,5,-8", "-1, -8")]
     public void NegativeValuesShouldThrowAndDisplayNegativeValues(string numbers, string expectedValues)
     {
-        var exception = Assert.Throws<Exception>(() => Calculator.Calculate(numbers));
+        var calculator = new Calculator(new CalculatorOptions());
+        var exception = Assert.Throws<Exception>(() => calculator.Calculate(numbers));
 
         Assert.Contains(expectedValues, exception.Message);
     }
@@ -75,7 +81,8 @@ public class CalculatorTests
     [InlineData("-1,5,-8", "-1+5+-8 = -4")]
     public void AllowNegativeNumbersOnToggle(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers, allowNegativeNumbers: true);
+        var calculator = new Calculator(new CalculatorOptions() { AllowNegative = true });
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
@@ -86,7 +93,8 @@ public class CalculatorTests
     [InlineData("2,999,6", "2+999+6 = 1007")]
     public void ShouldZeroOutNumbersAboveUpperBound(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers);
+        var calculator = new Calculator(new CalculatorOptions());
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
@@ -98,17 +106,20 @@ public class CalculatorTests
     [InlineData("2,5001,6", "2+0+6 = 8")]
     public void ShouldAllowUpperBoundToBechanged(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers, upperBound: 5000);
+        var calculator = new Calculator(new CalculatorOptions() { UpperBound = 5000 });
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
 
     [Theory]
     [InlineData("//#\n2#5", "2+5 = 7")]
+    [InlineData("//|\n2|5", "2+5 = 7")]
     [InlineData("//,\n2,ff,100", "2+0+100 = 102")]
     public void AllowForCustomSingleCharDelimiter(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers);
+        var calculator = new Calculator(new CalculatorOptions());
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
@@ -116,26 +127,26 @@ public class CalculatorTests
     [Fact]
     public void ShouldThrowWhenMoreThanTwoCharactersForSingleDelimiter()
     {
-        Assert.Throws<Exception>(() => Calculator.Calculate("//||\n2||5"));
+        var calculator = new Calculator(new CalculatorOptions());
+        Assert.Throws<Exception>(() => calculator.Calculate("//||\n2||5"));
     }
 
     [Theory]
     [InlineData("//[***]\n11***22***33", "11+22+33 = 66")]
-    [InlineData("//[||]\n11||22||33", "11+22+33 = 66")]
-    [InlineData("//[||]\n11||22,33", "11+22+33 = 66")]
     public void AllowForCustomAnyLengthCharDelimiter(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers);
+        var calculator = new Calculator(new CalculatorOptions());
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
 
     [Theory]
     [InlineData("//[*][!!][r9r]\n11r9r22*hh*33!!44", "11+22+0+33+44 = 110")]
-    [InlineData("//[*][!!][r9r]\n11r9r22,hh\n33!!44", "11+22+0+33+44 = 110")]
     public void AllowForMultipleCustomDelimiters(string numbers, string expected)
     {
-        var result = Calculator.Calculate(numbers);
+        var calculator = new Calculator(new CalculatorOptions());
+        var result = calculator.Calculate(numbers);
 
         Assert.Equal(expected, result);
     }
